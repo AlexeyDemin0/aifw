@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 
@@ -28,7 +29,6 @@ class Tensor {
   const Shape& shape() const;
   const Stride& stride() const;
   DType dtype() const;
-
   size_t numel() const;
 
  private:
@@ -39,7 +39,7 @@ class Tensor {
   Shape shape_;
   Stride stride_;
   DType dtype_;
-  Storage storage_;
+  std::shared_ptr<Storage> storage_;
 };
 
 inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
@@ -47,22 +47,23 @@ inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
       shape_(shape),
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
-      storage_(backend, shape_.numel()) {}
+      storage_(std::make_shared<Storage>(backend, shape_.numel())) {}
 
-inline void* Tensor::data() { return storage_.data(); }
 
-inline const void* Tensor::data() const { return storage_.data(); }
+inline void* Tensor::data() { return storage_->data(); }
+
+inline const void* Tensor::data() const { return storage_->data(); }
 
 template <typename T>
 inline T* Tensor::data_as() {
   validate_type<T>();
-  return static_cast<T*>(storage_.data());
+  return static_cast<T*>(storage_->data());
 }
 
 template <typename T>
 inline const T* Tensor::data_as() const {
   validate_type<T>();
-  return static_cast<const T*>(storage_.data());
+  return static_cast<const T*>(storage_->data());
 }
 
 inline const Shape& Tensor::shape() const { return shape_; }
