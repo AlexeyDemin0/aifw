@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <initializer_list>
 #include <memory>
 #include <stdexcept>
 #include <type_traits>
@@ -31,6 +32,8 @@ class Tensor {
   DType dtype() const;
   size_t numel() const;
 
+  size_t compute_offset(std::initializer_list<size_t> indices) const;
+
  private:
   template <typename T>
   void validate_type() const;
@@ -40,6 +43,7 @@ class Tensor {
   Stride stride_;
   DType dtype_;
   std::shared_ptr<Storage> storage_;
+  size_t offset_ = 0;
 };
 
 inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
@@ -57,13 +61,13 @@ inline const void* Tensor::data() const { return storage_->data(); }
 template <typename T>
 inline T* Tensor::data_as() {
   validate_type<T>();
-  return static_cast<T*>(storage_->data());
+  return static_cast<T*>(storage_->data()) + offset_;
 }
 
 template <typename T>
 inline const T* Tensor::data_as() const {
   validate_type<T>();
-  return static_cast<const T*>(storage_->data());
+  return static_cast<const T*>(storage_->data()) + offset_;
 }
 
 inline const Shape& Tensor::shape() const { return shape_; }
@@ -73,6 +77,18 @@ inline const Stride& Tensor::stride() const { return stride_; }
 inline DType Tensor::dtype() const { return dtype_; }
 
 inline size_t Tensor::numel() const { return shape_.numel(); }
+
+inline size_t Tensor::compute_offset(
+    std::initializer_list<size_t> indices) const {
+  if (indices.size() != shape_.rank())
+    throw std::runtime_error("rank mismatch");
+
+  size_t off = offset_;
+  size_t dim = 0;
+
+  for (auto idx : indices) off += idx * stride_[dim++];
+  return off;
+}
 
 template <typename T>
 inline void Tensor::validate_type() const {
