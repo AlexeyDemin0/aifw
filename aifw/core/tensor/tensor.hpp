@@ -27,6 +27,7 @@ class Tensor {
   template <typename T>
   const T* data_as() const;
 
+  IBackend& backend() const;
   const Shape& shape() const;
   const Stride& stride() const;
   DType dtype() const;
@@ -69,6 +70,8 @@ inline const T* Tensor::data_as() const {
   validate_type<T>();
   return static_cast<const T*>(storage_->data()) + offset_;
 }
+
+inline IBackend& Tensor::backend() const { return *backend_; }
 
 inline const Shape& Tensor::shape() const { return shape_; }
 
