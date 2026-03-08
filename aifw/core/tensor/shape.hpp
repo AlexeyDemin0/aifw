@@ -18,7 +18,7 @@ class Shape {
   size_t operator[](size_t i) const;
 
   size_t rank() const;
-  const std::vector<size_t>& values();
+  const std::vector<size_t>& values() const;
   size_t numel() const;
 
  private:
@@ -34,7 +34,7 @@ inline size_t Shape::operator[](size_t i) const { return dims_[i]; }
 
 inline size_t Shape::rank() const { return dims_.size(); }
 
-inline const std::vector<size_t>& Shape::values() { return dims_; }
+inline const std::vector<size_t>& Shape::values() const { return dims_; }
 
 inline size_t Shape::numel() const {
   if (dims_.empty()) return 0;
