@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
+#include <stdexcept>
 
 namespace aifw::core {
 
@@ -18,6 +20,21 @@ inline size_t dtype_size(DType dt) {
       return 8;
   }
   return 0;
+}
+
+template <typename Fn>
+auto dtype_dispatch(DType dt, Fn&& fn) {
+  switch (dt) {
+    case DType::Float32:
+      return fn.template operator()<float>();
+    case DType::Float64:
+      return fn.template operator()<double>();
+    case DType::Int32:
+      return fn.template operator()<int32_t>();
+    case DType::Int64:
+      return fn.template operator()<int64_t>();
+  }
+  throw std::runtime_error("dtype_dispatch: unknown dtype");
 }
 
 }  // namespace aifw::core
