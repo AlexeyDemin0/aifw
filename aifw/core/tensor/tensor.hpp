@@ -1,13 +1,12 @@
 #pragma once
 
 #include <cstddef>
-#include <cstdint>
 #include <initializer_list>
 #include <memory>
 #include <stdexcept>
-#include <type_traits>
 
 #include "../backend/backend.hpp"
+#include "../contracts.hpp"
 #include "dtype.hpp"
 #include "shape.hpp"
 #include "storage.hpp"
@@ -141,17 +140,7 @@ inline bool Tensor::is_contiguous() const {
 
 template <typename T>
 inline void Tensor::validate_type() const {
-  if constexpr (std::is_same_v<T, float>) {
-    if (dtype_ != DType::Float32) throw std::runtime_error("dtype mismatch");
-  } else if constexpr (std::is_same_v<T, double>) {
-    if (dtype_ != DType::Float64) throw std::runtime_error("dtype mismatch");
-  } else if constexpr (std::is_same_v<T, int32_t>) {
-    if (dtype_ != DType::Int32) throw std::runtime_error("dtype mismatch");
-  } else if constexpr (std::is_same_v<T, int64_t>) {
-    if (dtype_ != DType::Int64) throw std::runtime_error("dtype mismatch");
-  } else {
-    static_assert(sizeof(T) == 0, "Unsupported dtype");
-  }
+  AIFW_EXPECT(dtype_ == dtype_of_v<T>, "validate_type: dtype mismatch");
 }
 
 }  // namespace aifw::core
