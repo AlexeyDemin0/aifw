@@ -8,7 +8,9 @@ endfunction()
 
 add_executable(test_tensor
   tensor/main.cpp
+  tensor/test_dtype.cpp
   tensor/test_shape.cpp
+  tensor/test_stride.cpp
   tensor/test_tensor.cpp
 )
 aifw_test_module(test_tensor)

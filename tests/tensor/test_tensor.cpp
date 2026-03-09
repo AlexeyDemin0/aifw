@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "../../aifw/core/backend/cpu_backend.hpp"
+#include "../../aifw/core/tensor/stride.hpp"
 #include "../../aifw/core/tensor/tensor.hpp"
 #include "../../aifw/core/tensor/tensor_factory.hpp"
 #include "../framework/test.hpp"
@@ -34,4 +35,16 @@ TEST(Tensor, is_contiguous) {
   CpuBackend cpu;
   Tensor t(cpu, Shape{3, 3}, DType::Float32);
   EXPECT_TRUE(t.is_contiguous());
+}
+
+TEST(Tensor, view_shares_storage) {
+  CpuBackend cpu;
+  Tensor t(cpu, Shape{4}, DType::Float32);
+  t.at<float>(1) = 42.0f;
+
+  Tensor v = t.view(Shape{2, 2}, make_contiguous_stride(Shape{2, 2}), 0);
+  EXPECT_NEAR(v.at<float>(0, 1), 42.0f, 1e-6f);
+
+  v.at<float>(0, 1) = 99.0f;
+  EXPECT_NEAR(t.at<float>(1), 99.0f, 1e-6f);
 }
