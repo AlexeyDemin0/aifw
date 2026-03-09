@@ -62,7 +62,8 @@ inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
       shape_(shape),
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
-      storage_(std::make_shared<Storage>(backend, shape_.numel())) {}
+      storage_(std::make_shared<Storage>(
+          backend, shape_.numel() * dtype_size(dtype_))) {}
 
 inline Tensor::Tensor(IBackend& backend, Shape shape, Stride stride,
                       DType dtype, std::shared_ptr<Storage> storage,
