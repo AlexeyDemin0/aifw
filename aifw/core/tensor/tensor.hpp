@@ -44,6 +44,8 @@ class Tensor {
 
   Tensor view(Shape new_shape, Stride new_stride, size_t new_offset);
 
+  bool is_contiguous() const;
+
  private:
   template <typename T>
   void validate_type() const;
@@ -131,6 +133,10 @@ inline Tensor Tensor::view(Shape new_shape, Stride new_stride,
                            size_t new_offset) {
   return Tensor(*backend_, std::move(new_shape), std::move(new_stride), dtype_,
                 storage_, new_offset);
+}
+
+inline bool Tensor::is_contiguous() const {
+  return stride_.values() == make_contiguous_stride(shape_).values();
 }
 
 template <typename T>
