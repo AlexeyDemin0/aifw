@@ -19,6 +19,11 @@ class Tensor {
  public:
   Tensor(IBackend& backend, Shape shape, DType dtype);
 
+  template <typename T, typename... Ix>
+  T& at(Ix... ix);
+  template <typename T, typename... Ix>
+  const T& at(Ix... ix) const;
+
   void* data();
   const void* data() const;
 
@@ -54,6 +59,21 @@ inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
       dtype_(dtype),
       storage_(std::make_shared<Storage>(backend, shape_.numel())) {}
 
+template <typename T, typename... Ix>
+inline T& Tensor::at(Ix... ix) {
+  validate_type<T>();
+  std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
+  auto* ptr = data_as<T>();
+  return ptr[compute_offset(list)];
+}
+
+template <typename T, typename... Ix>
+inline const T& Tensor::at(Ix... ix) const {
+  validate_type<T>();
+  std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
+  const auto* ptr = data_as<T>();
+  return ptr[compute_offset(list)];
+}
 
 inline void* Tensor::data() { return storage_->data(); }
 
