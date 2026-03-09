@@ -62,7 +62,7 @@ if(AIFW_ENABLE_CUDA)
   message(STATUS "CUDA enabled: ${CUDAToolKit_VERSION}")
 endif()
 
-# ─── Subdirectories ───────────────────────────────────────────────────────────
+# ─── AIFW ─────────────────────────────────────────────────────────────────────
 
 add_subdirectory(aifw)
 
