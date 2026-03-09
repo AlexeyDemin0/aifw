@@ -51,6 +51,7 @@ target_compile_options(aifw_warnings INTERFACE
 # ─── Options ──────────────────────────────────────────────────────────────────
 
 option(AIFW_BUILD_TESTS "Build tests" ON)
+option(AIFW_BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(AIFW_ENABLE_CUDA "Enable CUDA backend" OFF)
 
 # ─── CUDA ─────────────────────────────────────────────────────────────────────
@@ -65,7 +66,15 @@ endif()
 
 add_subdirectory(aifw)
 
+# ─── Tests ────────────────────────────────────────────────────────────────────
+
 if(AIFW_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+# ─── Benchmarks ───────────────────────────────────────────────────────────────
+
+if(AIFW_BUILD_BENCHMARKS)
+  add_subdirectory(benchmarks)
 endif()
