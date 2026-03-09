@@ -184,7 +184,7 @@ template <typename Policy>
 inline Tensor matmul(const Tensor& a, const Tensor& b) {
   Shape out_shape{a.shape()[0], b.shape()[1]};
   Tensor out(a.backend(), out_shape, a.dtype());
-  ops::add<Policy>(a, b, out);
+  ops::matmul<Policy>(a, b, out);
   return out;
 }
 
