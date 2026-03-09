@@ -18,6 +18,8 @@ namespace aifw::core {
 class Tensor {
  public:
   Tensor(IBackend& backend, Shape shape, DType dtype);
+  Tensor(IBackend& backend, Shape shape, Stride stride, DType dtype,
+         std::shared_ptr<Storage> storage, size_t offset);
 
   template <typename T, typename... Ix>
   T& at(Ix... ix);
@@ -40,6 +42,8 @@ class Tensor {
 
   size_t compute_offset(std::initializer_list<size_t> indices) const;
 
+  Tensor view(Shape new_shape, Stride new_stride, size_t new_offset);
+
  private:
   template <typename T>
   void validate_type() const;
@@ -58,6 +62,16 @@ inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
       storage_(std::make_shared<Storage>(backend, shape_.numel())) {}
+
+inline Tensor::Tensor(IBackend& backend, Shape shape, Stride stride,
+                      DType dtype, std::shared_ptr<Storage> storage,
+                      size_t offset)
+    : backend_(&backend),
+      shape_(std::move(shape)),
+      stride_(std::move(stride)),
+      dtype_(dtype),
+      storage_(std::move(storage)),
+      offset_(offset) {}
 
 template <typename T, typename... Ix>
 inline T& Tensor::at(Ix... ix) {
@@ -111,6 +125,12 @@ inline size_t Tensor::compute_offset(
 
   for (auto idx : indices) off += idx * stride_[dim++];
   return off;
+}
+
+inline Tensor Tensor::view(Shape new_shape, Stride new_stride,
+                           size_t new_offset) {
+  return Tensor(*backend_, std::move(new_shape), std::move(new_stride), dtype_,
+                storage_, new_offset);
 }
 
 template <typename T>
