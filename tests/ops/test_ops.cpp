@@ -23,6 +23,54 @@ TEST(Ops, add_float32) {
   EXPECT_NEAR(out.at<float>(1), 7.0f, 1e-6f);
 }
 
+TEST(Ops, sub_float32) {
+  CpuBackend cpu;
+  auto a = zeros(cpu, Shape{4}, DType::Float32);
+  auto b = zeros(cpu, Shape{4}, DType::Float32);
+
+  a.at<float>(0) = 1.0f;
+  b.at<float>(0) = 2.0f;
+  a.at<float>(1) = 3.0f;
+  b.at<float>(1) = 4.0f;
+
+  auto out = ops::sub(a, b);
+
+  EXPECT_NEAR(out.at<float>(0), -1.0f, 1e-6f);
+  EXPECT_NEAR(out.at<float>(1), -1.0f, 1e-6f);
+}
+
+TEST(Ops, mul_float32) {
+  CpuBackend cpu;
+  auto a = zeros(cpu, Shape{4}, DType::Float32);
+  auto b = zeros(cpu, Shape{4}, DType::Float32);
+
+  a.at<float>(0) = 1.0f;
+  b.at<float>(0) = 2.0f;
+  a.at<float>(1) = 3.0f;
+  b.at<float>(1) = 4.0f;
+
+  auto out = ops::mul(a, b);
+
+  EXPECT_NEAR(out.at<float>(0), 2.0f, 1e-6f);
+  EXPECT_NEAR(out.at<float>(1), 12.0f, 1e-6f);
+}
+
+TEST(Ops, div_float32) {
+  CpuBackend cpu;
+  auto a = zeros(cpu, Shape{4}, DType::Float32);
+  auto b = zeros(cpu, Shape{4}, DType::Float32);
+
+  a.at<float>(0) = 1.0f;
+  b.at<float>(0) = 2.0f;
+  a.at<float>(1) = 3.0f;
+  b.at<float>(1) = 4.0f;
+
+  auto out = ops::div(a, b);
+
+  EXPECT_NEAR(out.at<float>(0), 0.5f, 1e-6f);
+  EXPECT_NEAR(out.at<float>(1), 0.75f, 1e-6f);
+}
+
 TEST(Ops, add_shape_mismatch_throws) {
   CpuBackend cpu;
   auto a = zeros(cpu, Shape{4}, DType::Float32);
