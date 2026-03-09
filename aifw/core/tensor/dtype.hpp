@@ -8,6 +8,39 @@ namespace aifw::core {
 
 enum class DType { Float32, Float64, Int32, Int64, Bool };
 
+template <typename T>
+struct dtype_of {
+  static_assert(false, "dtype_of: unsupported dtype");
+};
+
+template <>
+struct dtype_of<float> {
+  static constexpr DType value = DType::Float32;
+};
+
+template <>
+struct dtype_of<double> {
+  static constexpr DType value = DType::Float64;
+};
+
+template <>
+struct dtype_of<int32_t> {
+  static constexpr DType value = DType::Int32;
+};
+
+template <>
+struct dtype_of<int64_t> {
+  static constexpr DType value = DType::Int64;
+};
+
+template <>
+struct dtype_of<bool> {
+  static constexpr DType value = DType::Bool;
+};
+
+template <typename T>
+inline constexpr DType dtype_of_v = dtype_of<T>::value;
+
 inline size_t dtype_size(DType dt) {
   switch (dt) {
     case DType::Float32:
