@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "../contracts.hpp"
+#include "../assert.hpp"
 #include "../tensor/tensor.hpp"
 #include "kernel_registry.hpp"
 

@@ -5,8 +5,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "../assert.hpp"
 #include "../backend/backend.hpp"
-#include "../contracts.hpp"
 #include "dtype.hpp"
 #include "shape.hpp"
 #include "storage.hpp"

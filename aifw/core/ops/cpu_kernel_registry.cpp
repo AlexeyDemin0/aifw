@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <cstring>
 
-#include "../contracts.hpp"
+#include "../assert.hpp"
 #include "../tensor/dtype.hpp"
 
 namespace aifw::core {
