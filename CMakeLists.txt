@@ -50,6 +50,8 @@ target_compile_options(aifw_warnings INTERFACE
 
 # --- Options ------------------------------------------------------------------
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(AIFW_BUILD_TESTS "Build tests" ON)
 option(AIFW_BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(AIFW_ENABLE_CUDA "Enable CUDA backend" OFF)
