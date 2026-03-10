@@ -1,5 +1,5 @@
 
-# ── In-source build guard ─────────────────────────────────────────────────────
+# -- In-source build guard -----------------------------------------------------
 
 if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR
@@ -9,7 +9,7 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   )
 endif()
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 3.20)
 
@@ -19,13 +19,13 @@ project(aifw
   LANGUAGES CXX
 )
 
-# ── Standards ─────────────────────────────────────────────────────────────────
+# -- Standards -----------------------------------------------------------------
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ─── Build type ───────────────────────────────────────────────────────────────
+# --- Build type ---------------------------------------------------------------
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
@@ -33,7 +33,7 @@ endif()
 
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
-# ─── Warnings interface ───────────────────────────────────────────────────────
+# --- Warnings interface -------------------------------------------------------
 
 add_library(aifw_warnings INTERFACE)
 add_library(aifw::warnings ALIAS aifw_warnings)
@@ -48,13 +48,13 @@ target_compile_options(aifw_warnings INTERFACE
   >
 )
 
-# ─── Options ──────────────────────────────────────────────────────────────────
+# --- Options ------------------------------------------------------------------
 
 option(AIFW_BUILD_TESTS "Build tests" ON)
 option(AIFW_BUILD_BENCHMARKS "Build benchmarks" OFF)
 option(AIFW_ENABLE_CUDA "Enable CUDA backend" OFF)
 
-# ─── CUDA ─────────────────────────────────────────────────────────────────────
+# --- CUDA ---------------------------------------------------------------------
 
 if(AIFW_ENABLE_CUDA)
   enable_language(CUDA)
@@ -62,18 +62,18 @@ if(AIFW_ENABLE_CUDA)
   message(STATUS "CUDA enabled: ${CUDAToolKit_VERSION}")
 endif()
 
-# ─── AIFW ─────────────────────────────────────────────────────────────────────
+# --- AIFW ---------------------------------------------------------------------
 
 add_subdirectory(aifw)
 
-# ─── Tests ────────────────────────────────────────────────────────────────────
+# --- Tests --------------------------------------------------------------------
 
 if(AIFW_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
 
-# ─── Benchmarks ───────────────────────────────────────────────────────────────
+# --- Benchmarks ---------------------------------------------------------------
 
 if(AIFW_BUILD_BENCHMARKS)
   add_subdirectory(benchmarks)

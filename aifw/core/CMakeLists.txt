@@ -1,5 +1,5 @@
 
-# ─── Core ─────────────────────────────────────────────────────────────────────
+# --- Core ---------------------------------------------------------------------
 
 add_library(aifw_core)
 add_library(aifw::core ALIAS aifw_core)
@@ -19,7 +19,7 @@ target_compile_definitions(aifw_core PUBLIC
 
 target_link_libraries(aifw_core PUBLIC aifw::warnings)
 
-# ─── CUDA backend ─────────────────────────────────────────────────────────────
+# --- CUDA backend -------------------------------------------------------------
 
 if(AIFW_ENABLE_CUDA)
   target_sources(aifw_core PRIVATE

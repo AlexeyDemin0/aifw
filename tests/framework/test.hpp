@@ -55,7 +55,7 @@ inline int run_all() {
     }
   }
 
-  std::cout << "\n─────────────────────────────────────\n"
+  std::cout << "\n-------------------------------------\n"
             << detail::kGreen << " passed: " << passed << detail::kReset << "\n"
             << detail::kRed << " failed: " << failed << detail::kReset << "\n";
   return failed == 0 ? 0 : 1;
