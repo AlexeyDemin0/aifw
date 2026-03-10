@@ -61,35 +61,42 @@ inline int run_all() {
   return failed == 0 ? 0 : 1;
 }
 
-inline void expect_true(bool cond, const char* expr, const char* file,
-                        int line) {
+inline void expect_true(
+    bool cond, const char* expr, const char* file, int line
+) {
   if (!cond)
-    throw std::runtime_error(std::string(expr) + " [" + file + ":" +
-                             std::to_string(line) + "]");
+    throw std::runtime_error(
+        std::string(expr) + " [" + file + ":" + std::to_string(line) + "]"
+    );
 }
 
 template <typename T>
 void expect_eq(const T& a, const T& b, const char* file, int line) {
   if (a != b)
-    throw std::runtime_error("expected equal [" + std::string(file) + ":" +
-                             std::to_string(line) + "]");
+    throw std::runtime_error(
+        "expected equal [" + std::string(file) + ":" + std::to_string(line) +
+        "]"
+    );
 }
 
 template <typename T>
 void expect_near(T a, T b, T eps, const char* file, int line) {
   if (std::abs(a - b) > eps)
-    throw std::runtime_error("expected near: |" + std::to_string(a) + " - " +
-                             std::to_string(b) + "| > " + std::to_string(eps) +
-                             " [" + std::string(file) + ":" +
-                             std::to_string(line) + "]");
+    throw std::runtime_error(
+        "expected near: |" + std::to_string(a) + " - " + std::to_string(b) +
+        "| > " + std::to_string(eps) + " [" + std::string(file) + ":" +
+        std::to_string(line) + "]"
+    );
 }
 
 template <typename Ex, typename Fn>
 void expect_throws(Fn&& fn, const char* file, int line) {
   try {
     fn();
-    throw std::runtime_error(std::string("expected exception not thrown") +
-                             " [" + file + ":" + std::to_string(line) + "]");
+    throw std::runtime_error(
+        std::string("expected exception not thrown") + " [" + file + ":" +
+        std::to_string(line) + "]"
+    );
   } catch (const Ex&) {
     // expected
   }
@@ -99,7 +106,8 @@ void expect_throws(Fn&& fn, const char* file, int line) {
   static void test_##suite##_##name();             \
   static const bool _reg_##suite##_##name = []() { \
     ::aifw::test::registry().push_back(            \
-        {#suite, #name, &test_##suite##_##name});  \
+        {#suite, #name, &test_##suite##_##name}    \
+    );                                             \
     return true;                                   \
   }();                                             \
   static void test_##suite##_##name()

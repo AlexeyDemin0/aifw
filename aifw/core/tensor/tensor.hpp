@@ -17,8 +17,14 @@ namespace aifw::core {
 class Tensor {
  public:
   Tensor(IBackend& backend, Shape shape, DType dtype);
-  Tensor(IBackend& backend, Shape shape, Stride stride, DType dtype,
-         std::shared_ptr<Storage> storage, size_t offset);
+  Tensor(
+      IBackend& backend,
+      Shape shape,
+      Stride stride,
+      DType dtype,
+      std::shared_ptr<Storage> storage,
+      size_t offset
+  );
 
   template <typename T, typename... Ix>
   T& at(Ix... ix);
@@ -62,12 +68,20 @@ inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
       shape_(shape),
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
-      storage_(std::make_shared<Storage>(
-          backend, shape_.numel() * dtype_size(dtype_))) {}
+      storage_(
+          std::make_shared<Storage>(
+              backend, shape_.numel() * dtype_size(dtype_)
+          )
+      ) {}
 
-inline Tensor::Tensor(IBackend& backend, Shape shape, Stride stride,
-                      DType dtype, std::shared_ptr<Storage> storage,
-                      size_t offset)
+inline Tensor::Tensor(
+    IBackend& backend,
+    Shape shape,
+    Stride stride,
+    DType dtype,
+    std::shared_ptr<Storage> storage,
+    size_t offset
+)
     : backend_(&backend),
       shape_(std::move(shape)),
       stride_(std::move(stride)),
@@ -118,7 +132,8 @@ inline DType Tensor::dtype() const { return dtype_; }
 inline size_t Tensor::numel() const { return shape_.numel(); }
 
 inline size_t Tensor::compute_offset(
-    std::initializer_list<size_t> indices) const {
+    std::initializer_list<size_t> indices
+) const {
   if (indices.size() != shape_.rank())
     throw std::runtime_error("rank mismatch");
 
@@ -129,10 +144,17 @@ inline size_t Tensor::compute_offset(
   return off;
 }
 
-inline Tensor Tensor::view(Shape new_shape, Stride new_stride,
-                           size_t new_offset) {
-  return Tensor(*backend_, std::move(new_shape), std::move(new_stride), dtype_,
-                storage_, new_offset);
+inline Tensor Tensor::view(
+    Shape new_shape, Stride new_stride, size_t new_offset
+) {
+  return Tensor(
+      *backend_,
+      std::move(new_shape),
+      std::move(new_stride),
+      dtype_,
+      storage_,
+      new_offset
+  );
 }
 
 inline bool Tensor::is_contiguous() const {

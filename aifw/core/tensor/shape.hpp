@@ -38,8 +38,9 @@ inline const std::vector<size_t>& Shape::values() const { return dims_; }
 
 inline size_t Shape::numel() const {
   if (dims_.empty()) return 0;
-  return std::accumulate(dims_.begin(), dims_.end(), size_t(1),
-                         std::multiplies<>());
+  return std::accumulate(
+      dims_.begin(), dims_.end(), size_t(1), std::multiplies<>()
+  );
 }
 
 }  // namespace aifw::core

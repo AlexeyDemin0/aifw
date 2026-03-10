@@ -22,23 +22,27 @@ class CpuKernelRegistry final : public IKernelRegistry {
   static void elementwise(const Tensor& a, const Tensor& b, Tensor& out, Op op);
 };
 
-inline void CpuKernelRegistry::add(const Tensor& a, const Tensor& b,
-                                   Tensor& out) {
+inline void CpuKernelRegistry::add(
+    const Tensor& a, const Tensor& b, Tensor& out
+) {
   elementwise(a, b, out, [](auto x, auto y) { return x + y; });
 }
 
-inline void CpuKernelRegistry::sub(const Tensor& a, const Tensor& b,
-                                   Tensor& out) {
+inline void CpuKernelRegistry::sub(
+    const Tensor& a, const Tensor& b, Tensor& out
+) {
   elementwise(a, b, out, [](auto x, auto y) { return x - y; });
 }
 
-inline void CpuKernelRegistry::mul(const Tensor& a, const Tensor& b,
-                                   Tensor& out) {
+inline void CpuKernelRegistry::mul(
+    const Tensor& a, const Tensor& b, Tensor& out
+) {
   elementwise(a, b, out, [](auto x, auto y) { return x * y; });
 }
 
-inline void CpuKernelRegistry::div(const Tensor& a, const Tensor& b,
-                                   Tensor& out) {
+inline void CpuKernelRegistry::div(
+    const Tensor& a, const Tensor& b, Tensor& out
+) {
   elementwise(a, b, out, [](auto x, auto y) { return x / y; });
 }
 
@@ -51,8 +55,9 @@ inline void CpuKernelRegistry::relu(const Tensor& a, Tensor& out) {
 }
 
 template <typename Op>
-void CpuKernelRegistry::elementwise(const Tensor& a, const Tensor& b,
-                                    Tensor& out, Op op) {
+void CpuKernelRegistry::elementwise(
+    const Tensor& a, const Tensor& b, Tensor& out, Op op
+) {
   AIFW_ASSERT(a.numel() == b.numel());
 
   dtype_dispatch(a.dtype(), [&]<typename T>() {

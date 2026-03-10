@@ -103,13 +103,14 @@ inline int run_all() {
   return 0;
 }
 
-#define BENCH(suite, name, iterations)                         \
-  static void bench_##suite##_##name();                        \
-  static const bool _reg_##suite##_##name = []() {             \
-    ::aifw::bench::registry().push_back(                       \
-        {#suite, #name, iterations, &bench_##suite##_##name}); \
-    return true;                                               \
-  }();                                                         \
+#define BENCH(suite, name, iterations)                       \
+  static void bench_##suite##_##name();                      \
+  static const bool _reg_##suite##_##name = []() {           \
+    ::aifw::bench::registry().push_back(                     \
+        {#suite, #name, iterations, &bench_##suite##_##name} \
+    );                                                       \
+    return true;                                             \
+  }();                                                       \
   static void bench_##suite##_##name()
 
 #define BENCH_MAIN() \
