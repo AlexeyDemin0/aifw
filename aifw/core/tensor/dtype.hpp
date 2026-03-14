@@ -6,7 +6,7 @@
 
 namespace aifw::core {
 
-enum class DType { Float32, Float64, Int32, Int64, Bool };
+enum class DType : uint8_t { Float32, Float64, Int32, Int64, Bool };
 
 template <typename T>
 struct dtype_of {
