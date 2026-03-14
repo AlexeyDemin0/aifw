@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <utility>
 
 #include "../backend/backend.hpp"
 #include "dtype.hpp"
@@ -9,7 +10,7 @@
 namespace aifw::core {
 
 inline Tensor zeros(IBackend& backend, Shape shape, DType dt) {
-  Tensor t(backend, shape, dt);
+  Tensor t(backend, std::move(shape), dt);
 
   std::memset(t.data(), 0, t.numel() * dtype_size(dt));
   return t;

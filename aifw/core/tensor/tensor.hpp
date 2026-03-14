@@ -4,6 +4,7 @@
 #include <initializer_list>
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 #include "../assert.hpp"
 #include "../backend/backend.hpp"
@@ -65,7 +66,7 @@ class Tensor {
 
 inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
     : backend_(&backend),
-      shape_(shape),
+      shape_(std::move(shape)),
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
       storage_(
