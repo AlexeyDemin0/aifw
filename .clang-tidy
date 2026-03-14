@@ -1,0 +1,34 @@
+
+HeaderFilterRegex: '.*'
+SystemHeaders: false
+FormatStyle: file
+
+Checks: >
+  -*,
+
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+
+  misc-*,
+  -misc-use-anonymous-namespace,
+
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
+  -modernize-return-braced-init-list,
+  -modernize-use-designated-initializers,
+
+  performance-*,
+
+  readability-*,
+  -readability-identifier-length,
+  -readability-math-missing-parentheses,
+  -readability-braces-around-statements,
+  -readability-magic-numbers,
+  -readability-function-cognitive-complexity,
+  -readability-implicit-bool-conversion,
+  -readability-uppercase-literal-suffix,
+
+  cert-*,
+  -cert-err58-cpp
