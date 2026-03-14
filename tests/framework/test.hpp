@@ -97,7 +97,7 @@ void expect_throws(Fn&& fn, const char* file, int line) {
         std::string("expected exception not thrown") + " [" + file + ":" +
         std::to_string(line) + "]"
     );
-  } catch (const Ex&) {
+  } catch (const Ex&) {  // NOLINT
     // expected
   }
 }
