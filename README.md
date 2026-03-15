@@ -32,6 +32,7 @@ Options:
 | Flag | Default | Description |
 |---|---|---|
 | `AIFW_BUILD_TESTS` | `ON` | Build test binaries |
+| `AIFW_BUILD_BENCHMARKS` | `OFF` | Build benchmarks binaries |
 | `AIFW_ENABLE_CUDA` | `OFF` | Enable CUDA backend |
 
 ## Requirements
