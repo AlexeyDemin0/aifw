@@ -54,7 +54,7 @@ inline size_t dtype_size(DType dt) {
     case DType::Bool:
       return 1;
   }
-  return 0;
+  throw std::runtime_error("dtype_size: unknown dtype");
 }
 
 template <typename Fn>
