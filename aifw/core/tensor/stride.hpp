@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "aifw/core/assert.hpp"
 #include "shape.hpp"
 
 namespace aifw::core {
@@ -30,7 +31,10 @@ inline Stride::Stride(std::vector<size_t> strides)
 inline Stride::Stride(std::initializer_list<size_t> strides)
     : Stride(std::vector<size_t>(strides)) {}
 
-inline size_t Stride::operator[](size_t i) const { return strides_[i]; }
+inline size_t Stride::operator[](size_t i) const {
+  AIFW_ASSERT(i < strides_.size());
+  return strides_[i];
+}
 
 inline const std::vector<size_t>& Stride::values() const { return strides_; }
 

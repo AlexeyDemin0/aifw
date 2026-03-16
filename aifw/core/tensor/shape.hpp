@@ -7,6 +7,8 @@
 #include <utility>
 #include <vector>
 
+#include "aifw/core/assert.hpp"
+
 namespace aifw::core {
 
 class Shape {
@@ -30,7 +32,10 @@ inline Shape::Shape(std::vector<size_t> dims) : dims_(std::move(dims)) {}
 inline Shape::Shape(std::initializer_list<size_t> dims)
     : Shape(std::vector<size_t>(dims)) {}
 
-inline size_t Shape::operator[](size_t i) const { return dims_[i]; }
+inline size_t Shape::operator[](size_t i) const {
+  AIFW_ASSERT(i < dims_.size());
+  return dims_[i];
+}
 
 inline size_t Shape::rank() const { return dims_.size(); }
 
