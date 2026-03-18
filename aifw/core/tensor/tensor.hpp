@@ -43,6 +43,7 @@ class Tensor {
   IBackend& backend() const;
   const Shape& shape() const;
   const Stride& stride() const;
+  size_t offset() const;
   DType dtype() const;
   size_t numel() const;
 
@@ -127,6 +128,8 @@ inline IBackend& Tensor::backend() const { return *backend_; }
 inline const Shape& Tensor::shape() const { return shape_; }
 
 inline const Stride& Tensor::stride() const { return stride_; }
+
+inline size_t Tensor::offset() const { return offset_; }
 
 inline DType Tensor::dtype() const { return dtype_; }
 
