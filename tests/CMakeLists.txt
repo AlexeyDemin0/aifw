@@ -12,6 +12,7 @@ add_executable(test_tensor
   tensor/test_shape.cpp
   tensor/test_stride.cpp
   tensor/test_tensor.cpp
+  tensor/test_tensor_iterator.cpp
 )
 aifw_test_module(test_tensor)
 
