@@ -95,7 +95,7 @@ template <typename T, typename... Ix>
 inline T& Tensor::at(Ix... ix) {
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
-  auto* ptr = data_as<T>();
+  auto* ptr = static_cast<T*>(data());
   return ptr[compute_offset(list)];
 }
 
@@ -103,7 +103,7 @@ template <typename T, typename... Ix>
 inline const T& Tensor::at(Ix... ix) const {
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
-  const auto* ptr = data_as<T>();
+  const auto* ptr = static_cast<const T*>(data());
   return ptr[compute_offset(list)];
 }
 
