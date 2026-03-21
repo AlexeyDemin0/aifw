@@ -49,7 +49,8 @@ class Tensor {
 
   size_t compute_offset(std::initializer_list<size_t> indices) const;
 
-  Tensor view(Shape new_shape, Stride new_stride, size_t new_offset);
+  Tensor view(Shape new_shape, Stride new_stride, size_t new_offset) const;
+  Tensor reshape(Shape new_shape) const;
 
   bool is_contiguous() const;
 
@@ -150,7 +151,7 @@ inline size_t Tensor::compute_offset(
 
 inline Tensor Tensor::view(
     Shape new_shape, Stride new_stride, size_t new_offset
-) {
+) const {
   return Tensor(
       *backend_,
       std::move(new_shape),
@@ -158,6 +159,21 @@ inline Tensor Tensor::view(
       dtype_,
       storage_,
       new_offset
+  );
+}
+
+inline Tensor Tensor::reshape(Shape new_shape) const {
+  AIFW_EXPECT(new_shape.numel() == shape_.numel(), "reshape: numel mismatch");
+  AIFW_EXPECT(is_contiguous(), "reshape: tensor must be contiguous");
+
+  Stride new_stride = make_contiguous_stride(new_shape);
+  return Tensor(
+      *backend_,
+      std::move(new_shape),
+      std::move(new_stride),
+      dtype_,
+      storage_,
+      offset_
   );
 }
 
