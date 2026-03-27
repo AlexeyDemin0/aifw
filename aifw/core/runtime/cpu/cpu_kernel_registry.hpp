@@ -1,10 +1,12 @@
 #pragma once
 
 #include <cstddef>
+#include <cstring>
 
 #include "aifw/core/assert.hpp"
 #include "aifw/core/device/ikernel_registry.hpp"
 #include "aifw/core/ops/dispatch.hpp"
+#include "aifw/core/tensor/dtype.hpp"
 #include "aifw/core/tensor/tensor.hpp"
 #include "aifw/core/tensor/tensor_iterator.hpp"
 
@@ -12,6 +14,7 @@ namespace aifw::core {
 
 class CpuKernelRegistry final : public IKernelRegistry {
  public:
+  void fill(Tensor& t, double value) override;
   void add(const Tensor& a, const Tensor& b, Tensor& out) override;
   void sub(const Tensor& a, const Tensor& b, Tensor& out) override;
   void mul(const Tensor& a, const Tensor& b, Tensor& out) override;
@@ -33,6 +36,23 @@ class CpuKernelRegistry final : public IKernelRegistry {
       const Tensor& a, const Tensor& b, Tensor& out, Op op
   );
 };
+
+inline void fill(Tensor& t, double value) {
+  dtype_dispatch(t.dtype(), [&]<typename T>() {
+    T* ptr = t.data_as<T>();
+    const T val = static_cast<T>(value);
+    if (detail::resolve_path(t) == detail::ExecPath::Contiguous) {
+      if (val == T{0})
+        std::memset(ptr, 0, t.numel() * sizeof(T));
+      else
+        for (size_t i = 0; i < t.numel(); ++i) ptr[i] = val;
+    } else {
+      TensorIterator it(t);
+      auto* base = static_cast<T*>(t.data());
+      for (size_t i = 0; i < t.numel(); ++i) base[it[i]] = val;
+    }
+  });
+}
 
 inline void CpuKernelRegistry::add(
     const Tensor& a, const Tensor& b, Tensor& out
