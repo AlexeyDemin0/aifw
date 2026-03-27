@@ -95,6 +95,7 @@ inline Tensor::Tensor(
 
 template <typename T, typename... Ix>
 inline T& Tensor::at(Ix... ix) {
+  AIFW_ASSERT(device_id().type == DeviceType::Cpu);
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
   auto* ptr = static_cast<T*>(data());
@@ -103,6 +104,7 @@ inline T& Tensor::at(Ix... ix) {
 
 template <typename T, typename... Ix>
 inline const T& Tensor::at(Ix... ix) const {
+  AIFW_ASSERT(device_id().type == DeviceType::Cpu);
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
   const auto* ptr = static_cast<const T*>(data());
