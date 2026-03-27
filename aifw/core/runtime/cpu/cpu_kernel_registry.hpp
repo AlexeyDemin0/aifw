@@ -37,7 +37,7 @@ class CpuKernelRegistry final : public IKernelRegistry {
   );
 };
 
-inline void fill(Tensor& t, double value) {
+inline void CpuKernelRegistry::fill(Tensor& t, double value) {
   dtype_dispatch(t.dtype(), [&]<typename T>() {
     T* ptr = t.data_as<T>();
     const T val = static_cast<T>(value);
