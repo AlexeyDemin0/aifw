@@ -6,6 +6,12 @@ function(aifw_test_module target)
   add_test(NAME ${target} COMMAND ${target})
 endfunction()
 
+add_executable(test_device
+  device/main.cpp
+  device/test_device.cpp
+)
+aifw_test_module(test_device)
+
 add_executable(test_tensor
   tensor/main.cpp
   tensor/test_dtype.cpp
