@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <new>
 
-#include "iallocator.hpp"
+#include "aifw/core/device/iallocator.hpp"
 
 namespace aifw::core {
 

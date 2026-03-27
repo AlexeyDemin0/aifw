@@ -8,9 +8,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "aifw/core/device/cpu_device.hpp"
 #include "aifw/core/device/device.hpp"
 #include "aifw/core/device/idevice.hpp"
+#include "aifw/core/runtime/cpu/cpu_device.hpp"
 
 namespace aifw::core {
 

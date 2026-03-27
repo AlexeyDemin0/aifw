@@ -1,9 +1,9 @@
 
 #include "../framework/test.hpp"
-#include "aifw/core/device/device_registry.hpp"
 #include "aifw/core/ops/ops_elementwise.hpp"
 #include "aifw/core/ops/ops_linear.hpp"
 #include "aifw/core/ops/ops_unary.hpp"
+#include "aifw/core/runtime/device_registry.hpp"
 #include "aifw/core/tensor/stride.hpp"
 #include "aifw/core/tensor/tensor.hpp"
 #include "aifw/core/tensor/tensor_factory.hpp"

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../ops/cpu_kernel_registry.hpp"
+#include "aifw/core/device/iallocator.hpp"
+#include "aifw/core/device/idevice.hpp"
+#include "aifw/core/device/ikernel_registry.hpp"
 #include "cpu_allocator.hpp"
-#include "iallocator.hpp"
-#include "idevice.hpp"
-#include "ikernel_registry.hpp"
+#include "cpu_kernel_registry.hpp"
 
 namespace aifw::core {
 

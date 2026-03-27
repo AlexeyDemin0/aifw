@@ -2,11 +2,11 @@
 
 #include <cstddef>
 
-#include "../assert.hpp"
-#include "../device/ikernel_registry.hpp"
-#include "../tensor/tensor.hpp"
-#include "../tensor/tensor_iterator.hpp"
-#include "dispatch.hpp"
+#include "aifw/core/assert.hpp"
+#include "aifw/core/device/ikernel_registry.hpp"
+#include "aifw/core/ops/dispatch.hpp"
+#include "aifw/core/tensor/tensor.hpp"
+#include "aifw/core/tensor/tensor_iterator.hpp"
 
 namespace aifw::core {
 

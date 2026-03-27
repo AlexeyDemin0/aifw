@@ -3,10 +3,10 @@
 #include <string>
 
 #include "../framework/test.hpp"
-#include "aifw/core/device/cpu_device.hpp"
 #include "aifw/core/device/device.hpp"
-#include "aifw/core/device/device_registry.hpp"
 #include "aifw/core/device/idevice.hpp"
+#include "aifw/core/runtime/cpu/cpu_device.hpp"
+#include "aifw/core/runtime/device_registry.hpp"
 
 using namespace aifw::core;
 

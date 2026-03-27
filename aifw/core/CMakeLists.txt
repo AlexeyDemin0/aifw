@@ -5,7 +5,7 @@ add_library(aifw_core)
 add_library(aifw::core ALIAS aifw_core)
 
 target_sources(aifw_core PRIVATE
-  ops/cpu_kernel_registry.cpp
+  runtime/cpu/cpu_kernel_registry.cpp
 )
 
 target_include_directories(aifw_core PUBLIC

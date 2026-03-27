@@ -3,8 +3,8 @@
 #include <cstddef>
 #include <cstring>
 
-#include "../assert.hpp"
-#include "../tensor/dtype.hpp"
+#include "aifw/core/assert.hpp"
+#include "aifw/core/tensor/dtype.hpp"
 
 namespace aifw::core {
 

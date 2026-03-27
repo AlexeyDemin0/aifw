@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "../framework/test.hpp"
-#include "aifw/core/device/device_registry.hpp"
+#include "aifw/core/runtime/device_registry.hpp"
 #include "aifw/core/tensor/stride.hpp"
 #include "aifw/core/tensor/tensor.hpp"
 #include "aifw/core/tensor/tensor_factory.hpp"
