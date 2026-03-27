@@ -1,28 +1,29 @@
 #pragma once
 
 #include "../tensor/tensor.hpp"
-#include "kernel_registry.hpp"
 
 namespace aifw::core::ops {
 
 namespace nocheck {
 
 inline void matmul(const Tensor& a, const Tensor& b, Tensor& out) {
-  a.backend().kernels().matmul(a, b, out);
+  a.device().kernels().matmul(a, b, out);
 }
 
 inline Tensor matmul(const Tensor& a, const Tensor& b) {
   Shape out_shape{a.shape()[0], b.shape()[1]};
-  Tensor out(a.backend(), std::move(out_shape), a.dtype());
-  a.backend().kernels().matmul(a, b, out);
+  Tensor out(a.device(), std::move(out_shape), a.dtype());
+  a.device().kernels().matmul(a, b, out);
   return out;
 }
 
 }  // namespace nocheck
 
 inline void matmul(const Tensor& a, const Tensor& b, Tensor& out) {
-  AIFW_EXPECT(&a.backend() == &b.backend(), "matmul: different backends");
-  AIFW_EXPECT(&a.backend() == &out.backend(), "matmul: out different backend");
+  AIFW_EXPECT(a.device_id() == b.device_id(), "matmul: different backends");
+  AIFW_EXPECT(
+      a.device_id() == out.device_id(), "matmul: out different backend"
+  );
   AIFW_EXPECT(a.dtype() == b.dtype(), "matmul: dtype mismatch");
   AIFW_EXPECT(a.dtype() == out.dtype(), "matmul: out dtype mismatch");
 
@@ -45,7 +46,7 @@ inline void matmul(const Tensor& a, const Tensor& b, Tensor& out) {
 }
 
 inline Tensor matmul(const Tensor& a, const Tensor& b) {
-  AIFW_EXPECT(&a.backend() == &b.backend(), "matmul: different backends");
+  AIFW_EXPECT(a.device_id() == b.device_id(), "matmul: different backends");
   AIFW_EXPECT(a.dtype() == b.dtype(), "matmul: dtype mismatch");
 
   AIFW_EXPECT(a.shape().rank() == 2, "matmul: a must be 2D");

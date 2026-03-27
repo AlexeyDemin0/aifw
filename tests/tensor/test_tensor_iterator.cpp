@@ -1,6 +1,6 @@
 
 #include "../framework/test.hpp"
-#include "aifw/core/backend/cpu_backend.hpp"
+#include "aifw/core/device/device_registry.hpp"
 #include "aifw/core/ops/ops_elementwise.hpp"
 #include "aifw/core/ops/ops_linear.hpp"
 #include "aifw/core/ops/ops_unary.hpp"
@@ -12,23 +12,20 @@
 using namespace aifw::core;
 
 TEST(TensorIterator, compute_contiguous_1d) {
-  CpuBackend cpu;
-  Tensor t(cpu, Shape{5}, DType::Float32);
+  Tensor t(cpu(), Shape{5}, DType::Float32);
   ComputeTensorIterator it(t);
   for (size_t i = 0; i < 5; ++i) EXPECT_EQ(it[i], i);
 }
 
 TEST(TensorIterator, compute_contiguous_2d) {
-  CpuBackend cpu;
-  Tensor t(cpu, Shape{3, 4}, DType::Float32);
+  Tensor t(cpu(), Shape{3, 4}, DType::Float32);
   ComputeTensorIterator it(t);
   for (size_t i = 0; i < 3; ++i)
     for (size_t j = 0; j < 4; ++j) EXPECT_EQ(it[i * 4 + j], i * 4 + j);
 }
 
 TEST(TensorIterator, compute_view_with_offset) {
-  CpuBackend cpu;
-  Tensor base(cpu, Shape{8}, DType::Float32);
+  Tensor base(cpu(), Shape{8}, DType::Float32);
   Tensor v = base.view(Shape{4}, make_contiguous_stride(Shape{4}), 2);
   ComputeTensorIterator it(v);
   EXPECT_EQ(it[0], size_t(2));
@@ -38,8 +35,7 @@ TEST(TensorIterator, compute_view_with_offset) {
 }
 
 TEST(TensorIterator, compute_transposed_2d) {
-  CpuBackend cpu;
-  Tensor base(cpu, Shape{3, 2}, DType::Float32);
+  Tensor base(cpu(), Shape{3, 2}, DType::Float32);
   Tensor t = base.view(Shape{2, 3}, Stride{1, 2}, 0);
   ComputeTensorIterator it(t);
   EXPECT_EQ(it[0], size_t(0));
@@ -51,8 +47,7 @@ TEST(TensorIterator, compute_transposed_2d) {
 }
 
 TEST(TensorIterator, cache_matches_compute) {
-  CpuBackend cpu;
-  Tensor base(cpu, Shape{3, 2}, DType::Float32);
+  Tensor base(cpu(), Shape{3, 2}, DType::Float32);
   Tensor v = base.view(Shape{2, 3}, Stride{1, 2}, 0);
 
   CacheTensorIterator cache(v);
@@ -62,8 +57,7 @@ TEST(TensorIterator, cache_matches_compute) {
 }
 
 TEST(TensorIterator, cache_matches_compute_with_offset) {
-  CpuBackend cpu;
-  Tensor base(cpu, Shape{10}, DType::Float32);
+  Tensor base(cpu(), Shape{10}, DType::Float32);
   Tensor v = base.view(Shape{5}, make_contiguous_stride(Shape{5}), 3);
 
   CacheTensorIterator cache(v);
@@ -73,8 +67,7 @@ TEST(TensorIterator, cache_matches_compute_with_offset) {
 }
 
 TEST(StridedOps, add_on_view_with_offset) {
-  CpuBackend cpu;
-  auto base = zeros(cpu, Shape{8}, DType::Float32);
+  auto base = zeros(cpu(), Shape{8}, DType::Float32);
 
   for (size_t i = 0; i < 8; ++i) base.at<float>(i) = static_cast<float>(i);
 
@@ -90,8 +83,7 @@ TEST(StridedOps, add_on_view_with_offset) {
 }
 
 TEST(StridedOps, add_non_contiguous_stride) {
-  CpuBackend cpu;
-  auto base = zeros(cpu, Shape{8}, DType::Float32);
+  auto base = zeros(cpu(), Shape{8}, DType::Float32);
   for (size_t i = 0; i < 8; ++i) base.at<float>(i) = static_cast<float>(i);
 
   Tensor a = base.view(Shape{4}, Stride{2}, 0);
@@ -106,8 +98,7 @@ TEST(StridedOps, add_non_contiguous_stride) {
 }
 
 TEST(StridedOps, relu_on_strided_view) {
-  CpuBackend cpu;
-  auto base = zeros(cpu, Shape{6}, DType::Float32);
+  auto base = zeros(cpu(), Shape{6}, DType::Float32);
   base.at<float>(0) = -1.0f;
   base.at<float>(2) = -2.0f;
   base.at<float>(4) = 3.0f;
@@ -121,15 +112,13 @@ TEST(StridedOps, relu_on_strided_view) {
 }
 
 TEST(StridedOps, matmul_transposed_b) {
-  CpuBackend cpu;
-
-  Tensor a(cpu, Shape{2, 2}, DType::Float32);
+  Tensor a(cpu(), Shape{2, 2}, DType::Float32);
   a.at<float>(0, 0) = 1.0f;
   a.at<float>(0, 1) = 2.0f;
   a.at<float>(1, 0) = 3.0f;
   a.at<float>(1, 1) = 4.0f;
 
-  Tensor b_storage(cpu, Shape{2, 2}, DType::Float32);
+  Tensor b_storage(cpu(), Shape{2, 2}, DType::Float32);
   b_storage.at<float>(0, 0) = 5.0f;
   b_storage.at<float>(0, 1) = 6.0f;
   b_storage.at<float>(1, 0) = 7.0f;

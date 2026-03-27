@@ -1,16 +1,15 @@
 #include <stdexcept>
 
-#include "../../aifw/core/backend/cpu_backend.hpp"
-#include "../../aifw/core/ops/ops.hpp"
-#include "../../aifw/core/tensor/tensor_factory.hpp"
 #include "../framework/test.hpp"
+#include "aifw/core/device/device_registry.hpp"
+#include "aifw/core/ops/ops.hpp"
+#include "aifw/core/tensor/tensor_factory.hpp"
 
 using namespace aifw::core;
 
 TEST(Ops, add_float32) {
-  CpuBackend cpu;
-  auto a = zeros(cpu, Shape{4}, DType::Float32);
-  auto b = zeros(cpu, Shape{4}, DType::Float32);
+  auto a = zeros(cpu(), Shape{4}, DType::Float32);
+  auto b = zeros(cpu(), Shape{4}, DType::Float32);
 
   a.at<float>(0) = 1.0f;
   b.at<float>(0) = 2.0f;
@@ -24,9 +23,8 @@ TEST(Ops, add_float32) {
 }
 
 TEST(Ops, sub_float32) {
-  CpuBackend cpu;
-  auto a = zeros(cpu, Shape{4}, DType::Float32);
-  auto b = zeros(cpu, Shape{4}, DType::Float32);
+  auto a = zeros(cpu(), Shape{4}, DType::Float32);
+  auto b = zeros(cpu(), Shape{4}, DType::Float32);
 
   a.at<float>(0) = 1.0f;
   b.at<float>(0) = 2.0f;
@@ -40,9 +38,8 @@ TEST(Ops, sub_float32) {
 }
 
 TEST(Ops, mul_float32) {
-  CpuBackend cpu;
-  auto a = zeros(cpu, Shape{4}, DType::Float32);
-  auto b = zeros(cpu, Shape{4}, DType::Float32);
+  auto a = zeros(cpu(), Shape{4}, DType::Float32);
+  auto b = zeros(cpu(), Shape{4}, DType::Float32);
 
   a.at<float>(0) = 1.0f;
   b.at<float>(0) = 2.0f;
@@ -56,9 +53,8 @@ TEST(Ops, mul_float32) {
 }
 
 TEST(Ops, div_float32) {
-  CpuBackend cpu;
-  auto a = zeros(cpu, Shape{4}, DType::Float32);
-  auto b = zeros(cpu, Shape{4}, DType::Float32);
+  auto a = zeros(cpu(), Shape{4}, DType::Float32);
+  auto b = zeros(cpu(), Shape{4}, DType::Float32);
 
   a.at<float>(0) = 1.0f;
   b.at<float>(0) = 2.0f;
@@ -72,17 +68,15 @@ TEST(Ops, div_float32) {
 }
 
 TEST(Ops, add_shape_mismatch_throws) {
-  CpuBackend cpu;
-  auto a = zeros(cpu, Shape{4}, DType::Float32);
-  auto b = zeros(cpu, Shape{2}, DType::Float32);
-  Tensor out(cpu, Shape{4}, DType::Float32);
+  auto a = zeros(cpu(), Shape{4}, DType::Float32);
+  auto b = zeros(cpu(), Shape{2}, DType::Float32);
+  Tensor out(cpu(), Shape{4}, DType::Float32);
   EXPECT_THROWS(std::runtime_error, [&]() { ops::add(a, b, out); });
 }
 
 TEST(Ops, matmul_2x2) {
-  CpuBackend cpu;
-  Tensor a(cpu, Shape{2, 2}, DType::Float32);
-  Tensor b(cpu, Shape{2, 2}, DType::Float32);
+  Tensor a(cpu(), Shape{2, 2}, DType::Float32);
+  Tensor b(cpu(), Shape{2, 2}, DType::Float32);
 
   a.at<float>(0, 0) = 1.0f;
   a.at<float>(0, 1) = 2.0f;
@@ -103,8 +97,7 @@ TEST(Ops, matmul_2x2) {
 }
 
 TEST(Ops, relu_zeroes_negatives) {
-  CpuBackend cpu;
-  Tensor a(cpu, Shape{4}, DType::Float32);
+  Tensor a(cpu(), Shape{4}, DType::Float32);
   a.at<float>(0) = -2.0f;
   a.at<float>(1) = 0.0f;
   a.at<float>(2) = 3.0f;

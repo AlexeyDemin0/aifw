@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "../assert.hpp"
-#include "../backend/backend.hpp"
+#include "../device/idevice.hpp"
 #include "dtype.hpp"
 #include "shape.hpp"
 #include "storage.hpp"
@@ -17,9 +17,9 @@ namespace aifw::core {
 
 class Tensor {
  public:
-  Tensor(IBackend& backend, Shape shape, DType dtype);
+  Tensor(IDevice& device, Shape shape, DType dtype);
   Tensor(
-      IBackend& backend,
+      IDevice& device,
       Shape shape,
       Stride stride,
       DType dtype,
@@ -40,7 +40,8 @@ class Tensor {
   template <typename T>
   const T* data_as() const;
 
-  IBackend& backend() const;
+  IDevice& device() const;
+  Device device_id() const;
   const Shape& shape() const;
   const Stride& stride() const;
   size_t offset() const;
@@ -58,7 +59,7 @@ class Tensor {
   template <typename T>
   void validate_type() const;
 
-  IBackend* backend_;
+  IDevice* device_;
   Shape shape_;
   Stride stride_;
   DType dtype_;
@@ -66,26 +67,26 @@ class Tensor {
   size_t offset_ = 0;
 };
 
-inline Tensor::Tensor(IBackend& backend, Shape shape, DType dtype)
-    : backend_(&backend),
+inline Tensor::Tensor(IDevice& device, Shape shape, DType dtype)
+    : device_(&device),
       shape_(std::move(shape)),
       stride_(make_contiguous_stride(shape_)),
       dtype_(dtype),
       storage_(
           std::make_shared<Storage>(
-              backend, shape_.numel() * dtype_size(dtype_)
+              device.allocator(), shape_.numel() * dtype_size(dtype_)
           )
       ) {}
 
 inline Tensor::Tensor(
-    IBackend& backend,
+    IDevice& device,
     Shape shape,
     Stride stride,
     DType dtype,
     std::shared_ptr<Storage> storage,
     size_t offset
 )
-    : backend_(&backend),
+    : device_(&device),
       shape_(std::move(shape)),
       stride_(std::move(stride)),
       dtype_(dtype),
@@ -124,7 +125,9 @@ inline const T* Tensor::data_as() const {
   return static_cast<const T*>(storage_->data()) + offset_;
 }
 
-inline IBackend& Tensor::backend() const { return *backend_; }
+inline IDevice& Tensor::device() const { return *device_; }
+
+inline Device Tensor::device_id() const { return device_->device(); }
 
 inline const Shape& Tensor::shape() const { return shape_; }
 
@@ -153,7 +156,7 @@ inline Tensor Tensor::view(
     Shape new_shape, Stride new_stride, size_t new_offset
 ) const {
   return Tensor(
-      *backend_,
+      *device_,
       std::move(new_shape),
       std::move(new_stride),
       dtype_,
@@ -168,7 +171,7 @@ inline Tensor Tensor::reshape(Shape new_shape) const {
 
   Stride new_stride = make_contiguous_stride(new_shape);
   return Tensor(
-      *backend_,
+      *device_,
       std::move(new_shape),
       std::move(new_stride),
       dtype_,

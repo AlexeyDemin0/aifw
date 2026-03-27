@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../tensor/tensor.hpp"
-#include "kernel_registry.hpp"
 
 namespace aifw::core::ops {
 
@@ -10,7 +9,7 @@ namespace detail {
 inline void validate_binary_op(const Tensor& a, const Tensor& b) {
   AIFW_EXPECT(a.dtype() == b.dtype(), "validate_binary_op: dtype mismatch");
   AIFW_EXPECT(
-      &a.backend() == &b.backend(), "validate_binary_op: different backends"
+      a.device_id() == b.device_id(), "validate_binary_op: different backends"
   );
   AIFW_EXPECT(
       a.shape().values() == b.shape().values(),
@@ -23,41 +22,41 @@ inline void validate_binary_op(const Tensor& a, const Tensor& b) {
 namespace nocheck {
 
 inline void add(const Tensor& a, const Tensor& b, Tensor& out) {
-  a.backend().kernels().add(a, b, out);
+  a.device().kernels().add(a, b, out);
 }
 
 inline Tensor add(const Tensor& a, const Tensor& b) {
-  Tensor out(a.backend(), a.shape(), a.dtype());
+  Tensor out(a.device(), a.shape(), a.dtype());
   nocheck::add(a, b, out);
   return out;
 }
 
 inline void sub(const Tensor& a, const Tensor& b, Tensor& out) {
-  a.backend().kernels().sub(a, b, out);
+  a.device().kernels().sub(a, b, out);
 }
 
 inline Tensor sub(const Tensor& a, const Tensor& b) {
-  Tensor out(a.backend(), a.shape(), a.dtype());
+  Tensor out(a.device(), a.shape(), a.dtype());
   nocheck::sub(a, b, out);
   return out;
 }
 
 inline void mul(const Tensor& a, const Tensor& b, Tensor& out) {
-  a.backend().kernels().mul(a, b, out);
+  a.device().kernels().mul(a, b, out);
 }
 
 inline Tensor mul(const Tensor& a, const Tensor& b) {
-  Tensor out(a.backend(), a.shape(), a.dtype());
+  Tensor out(a.device(), a.shape(), a.dtype());
   nocheck::mul(a, b, out);
   return out;
 }
 
 inline void div(const Tensor& a, const Tensor& b, Tensor& out) {
-  a.backend().kernels().div(a, b, out);
+  a.device().kernels().div(a, b, out);
 }
 
 inline Tensor div(const Tensor& a, const Tensor& b) {
-  Tensor out(a.backend(), a.shape(), a.dtype());
+  Tensor out(a.device(), a.shape(), a.dtype());
   nocheck::div(a, b, out);
   return out;
 }

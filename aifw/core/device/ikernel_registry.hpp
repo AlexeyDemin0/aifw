@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../tensor/tensor.hpp"
-
 namespace aifw::core {
+
+class Tensor;
 
 class IKernelRegistry {
  public:
