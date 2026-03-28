@@ -43,7 +43,7 @@ T host_get(const Tensor& t, Ix... ix) {
 }
 
 template <typename T, typename... Ix>
-T host_set(const Tensor& t, T value, Ix... ix) {
+void host_set(const Tensor& t, T value, Ix... ix) {
   AIFW_EXPECT(t.dtype() == dtype_of_v<T>, "host_set: dtype mismatch");
   void* dst = detail::device_element_ptr_mut<T>(t, ix...);
   t.device().write_bytes(dst, &value, sizeof(T));
