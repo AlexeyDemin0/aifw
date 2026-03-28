@@ -14,7 +14,7 @@ void CpuKernelRegistry::matmul(const Tensor& a, const Tensor& b, Tensor& out) {
   AIFW_ASSERT(out.shape().rank() == 2);
   AIFW_ASSERT(a.shape()[1] == b.shape()[0]);
 
-  std::memset(out.data(), 0, out.numel() * dtype_size(out.dtype()));
+  fill(out, 0.0f);
 
   dtype_dispatch(a.dtype(), [&]<typename T>() {
     const size_t M = a.shape()[0];
