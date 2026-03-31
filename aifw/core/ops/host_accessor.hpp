@@ -20,7 +20,7 @@ const void* device_element_ptr(const Tensor& t, Ix... ix) {
   );
   std::initializer_list<size_t> indices{static_cast<size_t>(ix)...};
   const size_t off = t.compute_offset(indices);
-  return static_cast<const T*>(t.data()) + off - t.offset();
+  return static_cast<const T*>(t.data()) + off;
 }
 
 template <typename T, typename... Ix>
