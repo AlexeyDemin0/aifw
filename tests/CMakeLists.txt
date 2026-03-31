@@ -15,6 +15,7 @@ aifw_test_module(test_device)
 add_executable(test_tensor
   tensor/main.cpp
   tensor/test_dtype.cpp
+  tensor/test_host_accessor.cpp
   tensor/test_shape.cpp
   tensor/test_stride.cpp
   tensor/test_tensor.cpp
