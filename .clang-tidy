@@ -9,6 +9,7 @@ Checks: >
   bugprone-*,
   -bugprone-easily-swappable-parameters,
   -bugprone-narrowing-conversions,
+  -bugprone-branch-clone,
 
   misc-*,
   -misc-use-anonymous-namespace,
