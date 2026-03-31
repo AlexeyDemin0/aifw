@@ -22,6 +22,9 @@ class CpuKernelRegistry final : public IKernelRegistry {
   void matmul(const Tensor& a, const Tensor& b, Tensor& out) override;
   void relu(const Tensor& a, Tensor& out) override;
 
+  void fill_diagonal(Tensor& t, double value) override;
+  void arange(Tensor& t, double start, double step) override;
+
  private:
   template <typename Op>
   static void elementwise(const Tensor& a, const Tensor& b, Tensor& out, Op op);

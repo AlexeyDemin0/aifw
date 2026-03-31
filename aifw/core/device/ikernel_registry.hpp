@@ -15,6 +15,9 @@ class IKernelRegistry {
   virtual void div(const Tensor& a, const Tensor& b, Tensor& out) = 0;
   virtual void matmul(const Tensor& a, const Tensor& b, Tensor& out) = 0;
   virtual void relu(const Tensor& a, Tensor& out) = 0;
+
+  virtual void fill_diagonal(Tensor& t, double value) = 0;
+  virtual void arange(Tensor& t, double start, double step) = 0;
 };
 
 }  // namespace aifw::core
