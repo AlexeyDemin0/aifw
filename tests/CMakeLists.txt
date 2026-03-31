@@ -19,6 +19,7 @@ add_executable(test_tensor
   tensor/test_shape.cpp
   tensor/test_stride.cpp
   tensor/test_tensor.cpp
+  tensor/test_tensor_factory.cpp
   tensor/test_tensor_iterator.cpp
   tensor/test_tensor_views.cpp
 )
