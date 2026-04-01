@@ -28,5 +28,6 @@ aifw_test_module(test_tensor)
 add_executable(test_ops
   ops/main.cpp
   ops/test_ops.cpp
+  ops/test_broadcast.cpp
 )
 aifw_test_module(test_ops)
