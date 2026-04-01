@@ -105,8 +105,7 @@ TEST(BroadcastOps, add_bias_to_batch) {
   );
   auto bias = from_data<float>(cpu(), {1, 2, 3, 4});
 
-  auto [bias_e, batch_e] = broadcast(bias, batch);
-  auto out = ops::add(bias_e, batch_e);
+  auto out = ops::broadcast_add(bias, batch);
 
   EXPECT_EQ(out.shape()[0], size_t(3));
   EXPECT_EQ(out.shape()[1], size_t(4));
@@ -130,8 +129,7 @@ TEST(BroadcastOps, add_column_vector) {
       cpu(), {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, Shape{3, 4}
   );
 
-  auto [col_e, mat_e] = broadcast(col, mat);
-  auto out = ops::add(col_e, mat_e);
+  auto out = ops::broadcast_add(col, mat);
 
   EXPECT_NEAR(ops::host_get<float>(out, 0, 0), 2.0f, 1e-6f);
   EXPECT_NEAR(ops::host_get<float>(out, 1, 0), 3.0f, 1e-6f);
@@ -143,8 +141,7 @@ TEST(BroadcastOps, mul_scale_rows) {
   auto scale = from_data<float>(cpu(), {2, 3, 4}, Shape{3, 1});
   auto mat = ones(cpu(), Shape{3, 4}, DType::Float32);
 
-  auto [scale_e, mat_e] = broadcast(scale, mat);
-  auto out = ops::mul(scale_e, mat_e);
+  auto out = ops::broadcast_mul(scale, mat);
 
   for (size_t col = 0; col < 4; ++col) {
     EXPECT_NEAR(ops::host_get<float>(out, 0, col), 2.0f, 1e-6f);
@@ -157,8 +154,7 @@ TEST(BroadcastOps, add_3d) {
   auto a = ones(cpu(), Shape{2, 1, 4}, DType::Float32);
   auto b = full(cpu(), Shape{2, 3, 4}, DType::Float32, 2.0);
 
-  auto [a_e, b_e] = broadcast(a, b);
-  auto out = ops::add(a_e, b_e);
+  auto out = ops::broadcast_add(a, b);
 
   EXPECT_EQ(out.shape()[0], size_t(2));
   EXPECT_EQ(out.shape()[1], size_t(3));
@@ -182,8 +178,7 @@ TEST(BroadcastOps, linear_layer_forward) {
 
   auto xW = ops::matmul(x, W);  // {2,3}
 
-  auto [xW_e, b_e] = broadcast(xW, b);
-  auto out = ops::add(xW_e, b_e);  // {2,3} + {3} → {2,3}
+  auto out = ops::broadcast_add(xW, b);  // {2,3} + {3} → {2,3}
 
   // row 0: x[0]=[1,0,0], xW[0]=[1,0,0], +b=[2,2,3]
   EXPECT_NEAR(ops::host_get<float>(out, 0, 0), 2.0f, 1e-5f);

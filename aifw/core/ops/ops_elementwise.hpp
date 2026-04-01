@@ -2,7 +2,9 @@
 
 #include <string>
 
+#include "../assert.hpp"
 #include "../tensor/tensor.hpp"
+#include "broadcast.hpp"
 
 namespace aifw::core::ops {
 
@@ -14,10 +16,6 @@ inline void validate_binary_op(
   AIFW_EXPECT(a.dtype() == b.dtype(), std::string(op) + ": dtype mismatch");
   AIFW_EXPECT(
       a.device_id() == b.device_id(), std::string(op) + ": device mismatch"
-  );
-  AIFW_EXPECT(
-      a.shape().values() == b.shape().values(),
-      std::string(op) + ": shape mismatch"
   );
 }
 
@@ -67,16 +65,30 @@ inline Tensor div(const Tensor& a, const Tensor& b) {
 
 }  // namespace nocheck
 
-#define AIFW_ELEMENTWISE_OP(name)                                   \
-  inline void name(const Tensor& a, const Tensor& b, Tensor& out) { \
-    detail::validate_binary_op(a, b, #name);                        \
-    detail::validate_binary_op(a, out, #name);                      \
-    nocheck::name(a, b, out);                                       \
-  }                                                                 \
-                                                                    \
-  inline Tensor name(const Tensor& a, const Tensor& b) {            \
-    detail::validate_binary_op(a, b, #name);                        \
-    return nocheck::name(a, b);                                     \
+#define AIFW_ELEMENTWISE_OP(name)                                        \
+  inline void name(const Tensor& a, const Tensor& b, Tensor& out) {      \
+    detail::validate_binary_op(a, b, #name);                             \
+    detail::validate_binary_op(a, out, #name);                           \
+    AIFW_EXPECT(                                                         \
+        a.shape().values() == b.shape().values(),                        \
+        #name ": shape mismatch (use broadcast_" #name " for broadcast)" \
+    );                                                                   \
+    nocheck::name(a, b, out);                                            \
+  }                                                                      \
+                                                                         \
+  inline Tensor name(const Tensor& a, const Tensor& b) {                 \
+    detail::validate_binary_op(a, b, #name);                             \
+    AIFW_EXPECT(                                                         \
+        a.shape().values() == b.shape().values(),                        \
+        #name ": shape mismatch (use broadcast_" #name " for broadcast)" \
+    );                                                                   \
+    return nocheck::name(a, b);                                          \
+  }                                                                      \
+                                                                         \
+  inline Tensor broadcast_##name(const Tensor& a, const Tensor& b) {     \
+    detail::validate_binary_op(a, b, #name);                             \
+    auto [ba, bb] = broadcast(a, b);                                     \
+    return nocheck::name(ba, bb);                                        \
   }
 
 AIFW_ELEMENTWISE_OP(add);
