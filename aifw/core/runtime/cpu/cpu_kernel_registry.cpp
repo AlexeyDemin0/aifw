@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstring>
+#include <vector>
 
 #include "aifw/core/assert.hpp"
 #include "aifw/core/ops/dispatch.hpp"
@@ -78,6 +79,54 @@ void CpuKernelRegistry::arange(Tensor& t, double start, double step) {
       auto* base = static_cast<T*>(t.data());
       for (size_t i = 0; i < t.numel(); ++i)
         base[it[i]] = static_cast<T>(start + static_cast<double>(i) * step);
+    }
+  });
+}
+
+void CpuKernelRegistry::sum(
+    const Tensor& input,
+    Tensor& out,
+    const std::vector<size_t>& axes,
+    bool keepdims
+) {
+  fill(out, 0.0);
+
+  const size_t rank = input.shape().rank();
+  const size_t out_rank = out.shape().rank();
+
+  dtype_dispatch(input.dtype(), [&]<typename T>() {
+    TensorIterator in_it(input);
+    const auto* in_base = static_cast<const T*>(input.data());
+    auto* out_ptr = static_cast<T*>(out.data());
+
+    const size_t n = input.numel();
+
+    for (size_t flat = 0; flat < n; ++flat) {
+      std::vector<size_t> coords(rank);
+      size_t tmp = flat;
+      for (size_t d = rank; d-- > 0;) {
+        coords[d] = tmp % input.shape()[d];
+        tmp /= input.shape()[d];
+      }
+
+      std::vector<size_t> out_coords;
+      out_coords.reserve(out_rank);
+
+      for (size_t d = 0; d < rank; ++d) {
+        const bool is_reduced = std::ranges::binary_search(axes, d);
+        if (is_reduced) {
+          if (keepdims) out_coords.push_back(0);
+        } else
+          out_coords.push_back(coords[d]);
+      }
+
+      if (out_coords.empty()) out_coords.push_back(0);
+
+      size_t out_off = out.offset();
+      for (size_t d = 0; d < out_coords.size(); ++d)
+        out_off += out_coords[d] * out.stride()[d];
+
+      out_ptr[out_off] += in_base[in_it[flat]];
     }
   });
 }

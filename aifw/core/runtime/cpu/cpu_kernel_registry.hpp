@@ -25,6 +25,13 @@ class CpuKernelRegistry final : public IKernelRegistry {
   void fill_diagonal(Tensor& t, double value) override;
   void arange(Tensor& t, double start, double step) override;
 
+  void sum(
+      const Tensor& input,
+      Tensor& out,
+      const std::vector<size_t>& axes,
+      bool keepdims
+  ) override;
+
  private:
   template <typename Op>
   static void elementwise(const Tensor& a, const Tensor& b, Tensor& out, Op op);
