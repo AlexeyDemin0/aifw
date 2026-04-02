@@ -29,5 +29,6 @@ add_executable(test_ops
   ops/main.cpp
   ops/test_ops.cpp
   ops/test_broadcast.cpp
+  ops/test_reduction.cpp
 )
 aifw_test_module(test_ops)
