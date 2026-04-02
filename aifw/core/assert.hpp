@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cassert>
+// IWYU pragma: begin_exports
+#include <stdexcept>
+// IWYU pragma: end_exports
 
 namespace aifw::core {
 
