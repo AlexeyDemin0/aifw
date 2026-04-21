@@ -13,6 +13,12 @@
 #include "storage.hpp"
 #include "stride.hpp"
 
+namespace aifw::autograd {
+
+struct AutogradMeta;
+
+}  // namespace aifw::autograd
+
 namespace aifw::core {
 
 class Tensor {
@@ -60,6 +66,13 @@ class Tensor {
 
   bool is_contiguous() const;
 
+  const std::shared_ptr<autograd::AutogradMeta>& autograd_meta() const {
+    return autograd_meta_;
+  }
+  void set_autograd_meta(std::shared_ptr<autograd::AutogradMeta> m) {
+    autograd_meta_ = std::move(m);
+  }
+
  private:
   template <typename T>
   void validate_type() const;
@@ -70,6 +83,8 @@ class Tensor {
   DType dtype_;
   std::shared_ptr<Storage> storage_;
   size_t offset_ = 0;
+
+  std::shared_ptr<autograd::AutogradMeta> autograd_meta_;
 };
 
 inline Tensor::Tensor(IDevice& device, Shape shape, DType dtype)
