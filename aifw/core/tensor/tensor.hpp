@@ -17,6 +17,8 @@ namespace aifw::core {
 
 class Tensor {
  public:
+  Tensor() = default;
+
   Tensor(IDevice& device, Shape shape, DType dtype);
   Tensor(
       IDevice& device,
@@ -31,6 +33,9 @@ class Tensor {
   T& at(Ix... ix);
   template <typename T, typename... Ix>
   const T& at(Ix... ix) const;
+
+  bool defined() const noexcept { return storage_ != nullptr; }
+  explicit operator bool() const noexcept { return defined(); }
 
   void* data();
   const void* data() const;
@@ -59,7 +64,7 @@ class Tensor {
   template <typename T>
   void validate_type() const;
 
-  IDevice* device_;
+  IDevice* device_ = nullptr;
   Shape shape_;
   Stride stride_;
   DType dtype_;
@@ -95,6 +100,7 @@ inline Tensor::Tensor(
 
 template <typename T, typename... Ix>
 inline T& Tensor::at(Ix... ix) {
+  AIFW_ASSERT(defined());
   AIFW_ASSERT(device_id().type == DeviceType::Cpu);
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
@@ -104,6 +110,7 @@ inline T& Tensor::at(Ix... ix) {
 
 template <typename T, typename... Ix>
 inline const T& Tensor::at(Ix... ix) const {
+  AIFW_ASSERT(defined());
   AIFW_ASSERT(device_id().type == DeviceType::Cpu);
   validate_type<T>();
   std::initializer_list<size_t> list{static_cast<size_t>(ix)...};
@@ -111,35 +118,64 @@ inline const T& Tensor::at(Ix... ix) const {
   return ptr[compute_offset(list)];
 }
 
-inline void* Tensor::data() { return storage_->data(); }
+inline void* Tensor::data() {
+  AIFW_ASSERT(defined());
+  return storage_->data();
+}
 
-inline const void* Tensor::data() const { return storage_->data(); }
+inline const void* Tensor::data() const {
+  AIFW_ASSERT(defined());
+  return storage_->data();
+}
 
 template <typename T>
 inline T* Tensor::data_as() {
+  AIFW_ASSERT(defined());
   validate_type<T>();
   return static_cast<T*>(storage_->data()) + offset_;
 }
 
 template <typename T>
 inline const T* Tensor::data_as() const {
+  AIFW_ASSERT(defined());
   validate_type<T>();
   return static_cast<const T*>(storage_->data()) + offset_;
 }
 
-inline IDevice& Tensor::device() const { return *device_; }
+inline IDevice& Tensor::device() const {
+  AIFW_ASSERT(defined());
+  return *device_;
+}
 
-inline Device Tensor::device_id() const { return device_->device(); }
+inline Device Tensor::device_id() const {
+  AIFW_ASSERT(defined());
+  return device_->device();
+}
 
-inline const Shape& Tensor::shape() const { return shape_; }
+inline const Shape& Tensor::shape() const {
+  AIFW_ASSERT(defined());
+  return shape_;
+}
 
-inline const Stride& Tensor::stride() const { return stride_; }
+inline const Stride& Tensor::stride() const {
+  AIFW_ASSERT(defined());
+  return stride_;
+}
 
-inline size_t Tensor::offset() const { return offset_; }
+inline size_t Tensor::offset() const {
+  AIFW_ASSERT(defined());
+  return offset_;
+}
 
-inline DType Tensor::dtype() const { return dtype_; }
+inline DType Tensor::dtype() const {
+  AIFW_ASSERT(defined());
+  return dtype_;
+}
 
-inline size_t Tensor::numel() const { return shape_.numel(); }
+inline size_t Tensor::numel() const {
+  AIFW_ASSERT(defined());
+  return shape_.numel();
+}
 
 inline size_t Tensor::compute_offset(
     std::initializer_list<size_t> indices
